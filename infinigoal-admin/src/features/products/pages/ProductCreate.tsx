@@ -90,33 +90,141 @@
 
 //////////////
 
+// import { useState } from "react";
+// import ProductForm from "../components/ProductForm";
+// import VariantsManager from "../components/VariantsManager";
+// import type { ProductFormValues, VariantFormValues } from "../schema";
+
+// export default function ProductCreate() {
+//   const [variants, setVariants] = useState<VariantFormValues[]>([]);
+
+//   const submitProduct = (product: ProductFormValues) => {
+//     console.log("PRODUCT:", product);
+//     console.log("VARIANTS:", variants);
+//     alert("Product + Variants logged. Ready for DB later.");
+//   };
+
+//   return (
+//     <div style={{ maxWidth: 820 }}>
+//       <h1>Create Product</h1>
+
+//       <ProductForm
+//         onSubmit={submitProduct}
+//         submitLabel="Save Product"
+//       />
+
+//       <VariantsManager
+//         variants={variants}
+//         onChange={setVariants}
+//       />
+//     </div>
+//   );
+// }
+
+
+///////// above code worked for basic
+
+
+// import { useState } from "react";
+
+// import ProductForm from "../components/ProductForm";
+// import ProductImagesManager from "../images/ProductImagesManager";
+// import VariantsManager from "../components/VariantsManager";
+
+// import type { ProductFormValues, VariantUI } from "../schema";
+// import type { ProductImageUI } from "@/features/images/types";
+
+// export default function ProductCreate() {
+//   /* ================= AUTHORITATIVE UI STATE ================= */
+
+//   const [productImages, setProductImages] = useState<ProductImageUI[]>([]);
+//   const [variants, setVariants] = useState<VariantUI[]>([]);
+
+//   /* ================= SUBMIT ================= */
+
+//   const submit = (product: ProductFormValues) => {
+//     console.log("✅ PRODUCT:", product);
+//     console.log("🖼 PRODUCT IMAGES:", productImages);
+//     console.log("🧩 VARIANTS (UI MODEL):", variants);
+
+//     alert("UI validated. Ready for Supabase save.");
+//   };
+
+//   return (
+//     <div style={page}>
+//       <h1>Create Product</h1>
+
+//       <ProductForm onSubmit={submit} />
+
+//       <ProductImagesManager
+//         images={productImages}
+//         onChange={setProductImages}
+//       />
+
+//       <VariantsManager
+//         variants={variants}
+//         onChange={setVariants}
+//       />
+//     </div>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const page: React.CSSProperties = {
+//   maxWidth: 1000,
+//   margin: "0 auto",
+//   paddingBottom: 80,
+// };
+
+
+
+/////////////
+
+
+
 import { useState } from "react";
+
 import ProductForm from "../components/ProductForm";
+import ProductImagesManager from "../images/ProductImagesManager";
 import VariantsManager from "../components/VariantsManager";
-import type { ProductFormValues, VariantFormValues } from "../schema";
+
+import type { ProductFormValues, VariantUI } from "../schema";
+import type { ProductImageUI } from "@/features/images/types";
 
 export default function ProductCreate() {
-  const [variants, setVariants] = useState<VariantFormValues[]>([]);
+  /* ================= AUTHORITATIVE UI STATE ================= */
 
-  const submitProduct = (product: ProductFormValues) => {
-    console.log("PRODUCT:", product);
-    console.log("VARIANTS:", variants);
-    alert("Product + Variants logged. Ready for DB later.");
+  const [productImages, setProductImages] = useState<ProductImageUI[]>([]);
+  const [variants, setVariants] = useState<VariantUI[]>([]);
+
+  /* ================= SUBMIT ================= */
+
+  const submit = (product: ProductFormValues) => {
+    console.log("✅ PRODUCT:", product);
+    console.log("🖼 PRODUCT IMAGES:", productImages);
+    console.log("🧩 VARIANTS (UI MODEL):", variants);
+
+    alert("UI validated. Ready for Supabase save.");
   };
 
   return (
-    <div style={{ maxWidth: 820 }}>
+    <div style={page}>
       <h1>Create Product</h1>
 
-      <ProductForm
-        onSubmit={submitProduct}
-        submitLabel="Save Product"
-      />
+      <ProductForm onSubmit={submit} />
 
-      <VariantsManager
-        variants={variants}
-        onChange={setVariants}
-      />
+      <ProductImagesManager images={productImages} onChange={setProductImages} />
+
+      <VariantsManager variants={variants} onChange={setVariants} />
     </div>
   );
 }
+
+/* ================= STYLES ================= */
+
+const page: React.CSSProperties = {
+  maxWidth: 1000,
+  margin: "0 auto",
+  paddingBottom: 80,
+};
