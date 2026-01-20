@@ -1,0 +1,91 @@
+/* ===============================
+   GLOBAL DESIGN TOKENS
+================================ */
+
+:root {
+  --bg-page: #f7f8fa;
+  --bg-card: #ffffff;
+  --border-soft: #e3e3e3;
+  --text-muted: #6c7a89;
+  --brand-primary: #bf9602;
+}
+
+/* ===============================
+   FLOATING INPUT SYSTEM
+================================ */
+
+.fi-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.fi-input {
+  width: 100%;
+  padding: 16px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: #fafafa;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.fi-input:focus {
+  border-color: var(--brand-primary);
+  background: #ffffff;
+}
+
+.fi-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.fi-label {
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: all 0.15s ease;
+  background: var(--bg-card);
+  padding: 0 6px;
+}
+
+.fi-input:focus + .fi-label,
+.fi-input:not(:placeholder-shown) + .fi-label {
+  top: -7px;
+  font-size: 11px;
+  color: var(--brand-primary);
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+
+.primary-btn {
+  width: 100%;
+  margin-top: 24px;
+  background-color: var(--brand-primary);
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(191, 150, 2, 0.3);
+}
+
+/* ===============================
+   SWITCH ROW
+================================ */
+
+.switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}

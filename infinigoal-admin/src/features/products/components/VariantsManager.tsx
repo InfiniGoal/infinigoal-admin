@@ -878,10 +878,10 @@ export default function VariantsManager({ variants, onChange }: Props) {
   return (
     <section style={section}>
       <header style={header}>
-        <div>
+        {/* <div>
           <h3 style={{ margin: 0 }}>Variants</h3>
           <div style={sub}>Add unlimited variants. Each variant can have its own images.</div>
-        </div>
+        </div> */}
 
         {!showForm ? (
           <button style={btnPrimary} onClick={() => setShowForm(true)} type="button">

@@ -547,6 +547,179 @@
 //////////////////////
 
 
+// import { useForm, Controller, type SubmitHandler } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+
+// import { variantSchema } from "../schema";
+// import type { VariantFormValues, VariantUI } from "../schema";
+
+// import AttributesEditor from "./AttributesEditor";
+
+// type Props = {
+//   onSave: (variant: VariantUI) => void;
+//   onCancel: () => void;
+// };
+
+// export default function VariantForm({ onSave, onCancel }: Props) {
+//   const {
+//     register,
+//     handleSubmit,
+//     control,
+//     formState: { errors },
+//   } = useForm<VariantFormValues>({
+//     resolver: zodResolver(variantSchema),
+//     defaultValues: {
+//       variant_name: "",
+//       short_label: "",
+//       price: 1,
+//       mrp: undefined,
+//       stock: 0,
+//       attributes: undefined,
+//       is_default: false,
+//     },
+//     mode: "onSubmit",
+//   });
+
+//   const submit: SubmitHandler<VariantFormValues> = (values) => {
+//     const uiVariant: VariantUI = {
+//       id: crypto.randomUUID(), // UI-only ID
+//       images: [],
+//       ...values,
+//     };
+
+//     console.log("✅ VARIANT UI:", uiVariant);
+//     onSave(uiVariant);
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit(submit)} style={panel}>
+//       <h4 style={{ marginTop: 0 }}>Add Variant</h4>
+
+//       <Field label="Variant Name" error={errors.variant_name?.message}>
+//         <input {...register("variant_name")} style={input} />
+//       </Field>
+
+//       <Field label="Short Label" error={errors.short_label?.message}>
+//         <input {...register("short_label")} style={input} />
+//       </Field>
+
+//       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+//         <Field label="Price" error={errors.price?.message}>
+//           <input
+//             type="number"
+//             {...register("price", { valueAsNumber: true })}
+//             style={input}
+//           />
+//         </Field>
+
+//         <Field label="MRP" error={errors.mrp?.message}>
+//           <input
+//             type="number"
+//             {...register("mrp", { valueAsNumber: true })}
+//             style={input}
+//           />
+//         </Field>
+//       </div>
+
+//       <Field label="Stock" error={errors.stock?.message}>
+//         <input
+//           type="number"
+//           {...register("stock", { valueAsNumber: true })}
+//           style={input}
+//         />
+//       </Field>
+
+//       {/* ✅ ATTRIBUTES EDITOR (SCALABLE, JSONB SAFE) */}
+//       <Field label="Attributes" error={(errors.attributes as any)?.message}>
+//         <Controller
+//           name="attributes"
+//           control={control}
+//           render={({ field }) => (
+//             <AttributesEditor
+//               value={field.value}
+//               onChange={field.onChange}
+//             />
+//           )}
+//         />
+//       </Field>
+
+//       <label style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+//         <input type="checkbox" {...register("is_default")} />
+//         Default Variant
+//       </label>
+
+//       <div style={{ display: "flex", gap: 10 }}>
+//         <button type="submit" style={btnPrimary}>
+//           Save Variant
+//         </button>
+//         <button type="button" onClick={onCancel} style={btnSecondary}>
+//           Cancel
+//         </button>
+//       </div>
+//     </form>
+//   );
+// }
+
+// /* ================= FIELD ================= */
+
+// function Field({
+//   label,
+//   error,
+//   children,
+// }: {
+//   label: string;
+//   error?: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div style={{ marginBottom: 12 }}>
+//       <div style={{ fontWeight: 600, marginBottom: 6 }}>{label}</div>
+//       {children}
+//       {error && <div style={{ color: "#b91c1c", marginTop: 6 }}>{error}</div>}
+//     </div>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const panel: React.CSSProperties = {
+//   border: "1px solid #e5e7eb",
+//   borderRadius: 12,
+//   padding: 16,
+//   marginTop: 12,
+// };
+
+// const input: React.CSSProperties = {
+//   width: "100%",
+//   padding: "10px",
+//   borderRadius: 8,
+//   border: "1px solid #e5e7eb",
+// };
+
+// const btnPrimary: React.CSSProperties = {
+//   padding: "10px 14px",
+//   borderRadius: 10,
+//   background: "#111827",
+//   color: "white",
+//   border: "1px solid #111827",
+//   cursor: "pointer",
+// };
+
+// const btnSecondary: React.CSSProperties = {
+//   padding: "10px 14px",
+//   borderRadius: 10,
+//   border: "1px solid #e5e7eb",
+//   background: "white",
+//   cursor: "pointer",
+// };
+
+
+
+
+
+///////////// ***** above code work before the UI polish
+
+
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -582,7 +755,7 @@ export default function VariantForm({ onSave, onCancel }: Props) {
 
   const submit: SubmitHandler<VariantFormValues> = (values) => {
     const uiVariant: VariantUI = {
-      id: crypto.randomUUID(), // UI-only ID
+      id: crypto.randomUUID(), // UI-only
       images: [],
       ...values,
     };
@@ -592,63 +765,71 @@ export default function VariantForm({ onSave, onCancel }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} style={panel}>
-      <h4 style={{ marginTop: 0 }}>Add Variant</h4>
+    <form onSubmit={handleSubmit(submit)} style={card}>
+      <h3 style={title}>Add Variant</h3>
 
-      <Field label="Variant Name" error={errors.variant_name?.message}>
-        <input {...register("variant_name")} style={input} />
-      </Field>
+      {/* ================= BASIC INFO ================= */}
+      <Section title="Variant Information">
+        <FloatingInput label="Variant Name" error={errors.variant_name?.message}>
+          <input {...register("variant_name")} style={inputBase} />
+        </FloatingInput>
 
-      <Field label="Short Label" error={errors.short_label?.message}>
-        <input {...register("short_label")} style={input} />
-      </Field>
+        <FloatingInput label="Short Label" error={errors.short_label?.message}>
+          <input {...register("short_label")} style={inputBase} />
+        </FloatingInput>
+      </Section>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <Field label="Price" error={errors.price?.message}>
+      {/* ================= PRICING ================= */}
+      <Section title="Pricing & Inventory">
+        <Row>
+          <FloatingInput label="Selling Price" error={errors.price?.message}>
+            <input
+              type="number"
+              {...register("price", { valueAsNumber: true })}
+              style={inputBase}
+            />
+          </FloatingInput>
+
+          <FloatingInput label="MRP" error={errors.mrp?.message}>
+            <input
+              type="number"
+              {...register("mrp", { valueAsNumber: true })}
+              style={inputBase}
+            />
+          </FloatingInput>
+        </Row>
+
+        <FloatingInput label="Stock" error={errors.stock?.message}>
           <input
             type="number"
-            {...register("price", { valueAsNumber: true })}
-            style={input}
+            {...register("stock", { valueAsNumber: true })}
+            style={inputBase}
           />
-        </Field>
+        </FloatingInput>
+      </Section>
 
-        <Field label="MRP" error={errors.mrp?.message}>
-          <input
-            type="number"
-            {...register("mrp", { valueAsNumber: true })}
-            style={input}
-          />
-        </Field>
-      </div>
-
-      <Field label="Stock" error={errors.stock?.message}>
-        <input
-          type="number"
-          {...register("stock", { valueAsNumber: true })}
-          style={input}
-        />
-      </Field>
-
-      {/* ✅ ATTRIBUTES EDITOR (SCALABLE, JSONB SAFE) */}
-      <Field label="Attributes" error={(errors.attributes as any)?.message}>
+      {/* ================= ATTRIBUTES ================= */}
+      <Section title="Variant Attributes">
         <Controller
           name="attributes"
           control={control}
           render={({ field }) => (
-            <AttributesEditor
-              value={field.value}
-              onChange={field.onChange}
-            />
+            <AttributesEditor value={field.value} onChange={field.onChange} />
           )}
         />
-      </Field>
+        {errors.attributes && (
+          <div style={errorText}>{errors.attributes.message as string}</div>
+        )}
+      </Section>
 
-      <label style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+      {/* ================= DEFAULT ================= */}
+      <div style={defaultRow}>
         <input type="checkbox" {...register("is_default")} />
-        Default Variant
-      </label>
+        <span>Make this the default variant</span>
+      </div>
 
-      <div style={{ display: "flex", gap: 10 }}>
+      {/* ================= ACTIONS ================= */}
+      <div style={actions}>
         <button type="submit" style={btnPrimary}>
           Save Variant
         </button>
@@ -660,9 +841,28 @@ export default function VariantForm({ onSave, onCancel }: Props) {
   );
 }
 
-/* ================= FIELD ================= */
+/* ================= UI HELPERS ================= */
 
-function Field({
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={section}>
+      <h4 style={sectionTitle}>{title}</h4>
+      {children}
+    </div>
+  );
+}
+
+function Row({ children }: { children: React.ReactNode }) {
+  return <div style={row}>{children}</div>;
+}
+
+function FloatingInput({
   label,
   error,
   children,
@@ -672,43 +872,106 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ marginBottom: 12 }}>
-      <div style={{ fontWeight: 600, marginBottom: 6 }}>{label}</div>
+    <div style={inputWrapper}>
+      <label style={floatingLabel}>{label}</label>
       {children}
-      {error && <div style={{ color: "#b91c1c", marginTop: 6 }}>{error}</div>}
+      {error && <div style={errorText}>{error}</div>}
     </div>
   );
 }
 
 /* ================= STYLES ================= */
 
-const panel: React.CSSProperties = {
-  border: "1px solid #e5e7eb",
-  borderRadius: 12,
-  padding: 16,
-  marginTop: 12,
+const card: React.CSSProperties = {
+  marginTop: 16,
+  padding: 20,
+  borderRadius: 18,
+  background: "#ffffff",
+  boxShadow: "0 8px 26px rgba(0,0,0,0.09)",
 };
 
-const input: React.CSSProperties = {
+const title: React.CSSProperties = {
+  fontSize: 16,
+  fontWeight: 800,
+  marginBottom: 18,
+};
+
+const section: React.CSSProperties = {
+  marginBottom: 22,
+};
+
+const sectionTitle: React.CSSProperties = {
+  fontSize: 14,
+  fontWeight: 700,
+  marginBottom: 12,
+};
+
+const row: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 14,
+};
+
+const inputWrapper: React.CSSProperties = {
+  position: "relative",
+  marginBottom: 16,
+  marginRight : 25,
+};
+
+const floatingLabel: React.CSSProperties = {
+  position: "absolute",
+  top: -8,
+  left: 12,
+  background: "#ffffff",
+  padding: "0 6px",
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#6C7A89",
+};
+
+const inputBase: React.CSSProperties = {
   width: "100%",
-  padding: "10px",
-  borderRadius: 8,
-  border: "1px solid #e5e7eb",
+  padding: "14px 12px",
+  borderRadius: 14,
+  border: "1px solid #E3E3E3",
+  background: "#FAFAFA",
+  fontSize: 14,
+};
+
+const errorText: React.CSSProperties = {
+  marginTop: 6,
+  fontSize: 12,
+  color: "#b91c1c",
+};
+
+const defaultRow: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
+  paddingTop: 12,
+  marginBottom: 18,
+  borderTop: "1px solid #eee",
+};
+
+const actions: React.CSSProperties = {
+  display: "flex",
+  gap: 12,
 };
 
 const btnPrimary: React.CSSProperties = {
-  padding: "10px 14px",
-  borderRadius: 10,
+  padding: "12px 16px",
+  borderRadius: 14,
   background: "#111827",
-  color: "white",
-  border: "1px solid #111827",
+  color: "#fff",
+  border: "none",
+  fontWeight: 800,
   cursor: "pointer",
 };
 
 const btnSecondary: React.CSSProperties = {
-  padding: "10px 14px",
-  borderRadius: 10,
+  padding: "12px 16px",
+  borderRadius: 14,
   border: "1px solid #e5e7eb",
-  background: "white",
+  background: "#ffffff",
   cursor: "pointer",
 };
