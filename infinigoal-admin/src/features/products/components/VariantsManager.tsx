@@ -819,10 +819,154 @@
 //////////////////
 
 
+// import { useMemo, useState } from "react";
+// import VariantForm from "./VariantForm";
+// import VariantCard from "./VariantCard";
+// import type { VariantUI } from "../schema";
+
+// type Props = {
+//   variants: VariantUI[];
+//   onChange: (variants: VariantUI[]) => void;
+// };
+
+// export default function VariantsManager({ variants, onChange }: Props) {
+//   const [showForm, setShowForm] = useState(false);
+
+//   const hasDefault = useMemo(() => variants.some((v) => v.is_default), [variants]);
+
+//   const addVariant = (variant: VariantUI) => {
+//     let updated: VariantUI[];
+
+//     if (variant.is_default) {
+//       updated = variants.map((v) => ({ ...v, is_default: false })).concat(variant);
+//     } else {
+//       updated = [...variants, variant];
+
+//       if (!hasDefault && updated.length > 0) {
+//         updated[0] = { ...updated[0], is_default: true };
+//       }
+//     }
+
+//     onChange(updated);
+//     setShowForm(false);
+//   };
+
+//   const updateVariant = (next: VariantUI) => {
+//     let updated = variants.map((v) => (v.id === next.id ? next : v));
+
+//     if (next.is_default) {
+//       updated = updated.map((v) => (v.id === next.id ? v : { ...v, is_default: false }));
+//     } else {
+//       if (updated.length > 0 && !updated.some((v) => v.is_default)) {
+//         updated[0] = { ...updated[0], is_default: true };
+//       }
+//     }
+
+//     onChange(updated);
+//   };
+
+//   const deleteVariant = (id: string) => {
+//     let updated = variants.filter((v) => v.id !== id);
+
+//     if (updated.length > 0 && !updated.some((v) => v.is_default)) {
+//       updated[0] = { ...updated[0], is_default: true };
+//     }
+
+//     onChange(updated);
+//   };
+
+//   return (
+//     <section style={section}>
+//       <header style={header}>
+//         {/* <div>
+//           <h3 style={{ margin: 0 }}>Variants</h3>
+//           <div style={sub}>Add unlimited variants. Each variant can have its own images.</div>
+//         </div> */}
+
+//         {!showForm ? (
+//           <button style={btnPrimary} onClick={() => setShowForm(true)} type="button">
+//             + Add Variant
+//           </button>
+//         ) : (
+//           <button style={btnSecondary} onClick={() => setShowForm(false)} type="button">
+//             Close
+//           </button>
+//         )}
+//       </header>
+
+//       {variants.length === 0 && !showForm && <div style={empty}>No variants added yet.</div>}
+
+//       {showForm && <VariantForm onSave={addVariant} onCancel={() => setShowForm(false)} />}
+
+//       {variants.map((v) => (
+//         <VariantCard
+//           key={v.id}
+//           variant={v}
+//           onUpdate={updateVariant}
+//           onDelete={() => deleteVariant(v.id)}
+//         />
+//       ))}
+//     </section>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const section: React.CSSProperties = {
+//   marginTop: 32,
+//   borderTop: "1px solid #e5e7eb",
+//   paddingTop: 24,
+// };
+
+// const header: React.CSSProperties = {
+//   display: "flex",
+//   justifyContent: "space-between",
+//   gap: 12,
+//   alignItems: "flex-start",
+//   marginBottom: 16,
+// };
+
+// const sub: React.CSSProperties = {
+//   fontSize: 13,
+//   color: "#6b7280",
+//   marginTop: 6,
+// };
+
+// const empty: React.CSSProperties = {
+//   padding: 16,
+//   border: "1px dashed #e5e7eb",
+//   borderRadius: 12,
+//   color: "#6b7280",
+// };
+
+// const btnPrimary: React.CSSProperties = {
+//   padding: "8px 12px",
+//   borderRadius: 10,
+//   border: "1px solid #111827",
+//   background: "#111827",
+//   color: "white",
+//   cursor: "pointer",
+// };
+
+// const btnSecondary: React.CSSProperties = {
+//   padding: "8px 12px",
+//   borderRadius: 10,
+//   border: "1px solid #e5e7eb",
+//   background: "white",
+//   cursor: "pointer",
+// };
+
+
+
+
+///////////// **** above code worked before the delte iamges
+
+
 import { useMemo, useState } from "react";
 import VariantForm from "./VariantForm";
 import VariantCard from "./VariantCard";
 import type { VariantUI } from "../schema";
+import { supabase } from "@/lib/supabaseClient";
 
 type Props = {
   variants: VariantUI[];
@@ -832,13 +976,18 @@ type Props = {
 export default function VariantsManager({ variants, onChange }: Props) {
   const [showForm, setShowForm] = useState(false);
 
-  const hasDefault = useMemo(() => variants.some((v) => v.is_default), [variants]);
+  const hasDefault = useMemo(
+    () => variants.some((v) => v.is_default),
+    [variants]
+  );
+
+  /* ================= ADD ================= */
 
   const addVariant = (variant: VariantUI) => {
     let updated: VariantUI[];
 
     if (variant.is_default) {
-      updated = variants.map((v) => ({ ...v, is_default: false })).concat(variant);
+      updated = variants.map(v => ({ ...v, is_default: false })).concat(variant);
     } else {
       updated = [...variants, variant];
 
@@ -851,59 +1000,103 @@ export default function VariantsManager({ variants, onChange }: Props) {
     setShowForm(false);
   };
 
+  /* ================= UPDATE ================= */
+
   const updateVariant = (next: VariantUI) => {
-    let updated = variants.map((v) => (v.id === next.id ? next : v));
+    let updated = variants.map(v => (v.id === next.id ? next : v));
 
     if (next.is_default) {
-      updated = updated.map((v) => (v.id === next.id ? v : { ...v, is_default: false }));
-    } else {
-      if (updated.length > 0 && !updated.some((v) => v.is_default)) {
-        updated[0] = { ...updated[0], is_default: true };
-      }
-    }
-
-    onChange(updated);
-  };
-
-  const deleteVariant = (id: string) => {
-    let updated = variants.filter((v) => v.id !== id);
-
-    if (updated.length > 0 && !updated.some((v) => v.is_default)) {
+      updated = updated.map(v =>
+        v.id === next.id ? v : { ...v, is_default: false }
+      );
+    } else if (!updated.some(v => v.is_default)) {
       updated[0] = { ...updated[0], is_default: true };
     }
 
     onChange(updated);
   };
 
+  /* ================= DELETE (DB + STORAGE + UI) ================= */
+
+  const deleteVariant = async (variant: VariantUI) => {
+    // 1️⃣ DELETE VARIANT IMAGES (DB + STORAGE)
+    if (variant.images?.length) {
+      for (const img of variant.images) {
+        await supabase
+          .from("product_variant_images")
+          .delete()
+          .eq("variant_id", variant.id)
+          .eq("image_url", img.image_url);
+
+        const path = img.image_url.split(
+          "/storage/v1/object/public/variant-images-v3/"
+        )[1];
+
+        if (path) {
+          await supabase.storage
+            .from("variant-images-v3")
+            .remove([path]);
+        }
+      }
+    }
+
+    // 2️⃣ DELETE VARIANT ROW
+    await supabase
+      .from("product_variants")
+      .delete()
+      .eq("id", variant.id);
+
+    // 3️⃣ UPDATE UI
+    let updated = variants.filter(v => v.id !== variant.id);
+
+    if (updated.length > 0 && !updated.some(v => v.is_default)) {
+      updated[0] = { ...updated[0], is_default: true };
+    }
+
+    onChange(updated);
+  };
+
+  /* ================= UI ================= */
+
   return (
     <section style={section}>
       <header style={header}>
-        {/* <div>
-          <h3 style={{ margin: 0 }}>Variants</h3>
-          <div style={sub}>Add unlimited variants. Each variant can have its own images.</div>
-        </div> */}
-
         {!showForm ? (
-          <button style={btnPrimary} onClick={() => setShowForm(true)} type="button">
+          <button
+            style={btnPrimary}
+            onClick={() => setShowForm(true)}
+            type="button"
+          >
             + Add Variant
           </button>
         ) : (
-          <button style={btnSecondary} onClick={() => setShowForm(false)} type="button">
+          <button
+            style={btnSecondary}
+            onClick={() => setShowForm(false)}
+            type="button"
+          >
             Close
           </button>
         )}
       </header>
 
-      {variants.length === 0 && !showForm && <div style={empty}>No variants added yet.</div>}
+      {variants.length === 0 && !showForm && (
+        <div style={empty}>No variants added yet.</div>
+      )}
 
-      {showForm && <VariantForm onSave={addVariant} onCancel={() => setShowForm(false)} />}
+      {showForm && (
+        <VariantForm
+          onSave={addVariant}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
 
       {variants.map((v) => (
         <VariantCard
           key={v.id}
           variant={v}
           onUpdate={updateVariant}
-          onDelete={() => deleteVariant(v.id)}
+          onDelete={() => deleteVariant(v)}
         />
       ))}
     </section>
@@ -920,16 +1113,8 @@ const section: React.CSSProperties = {
 
 const header: React.CSSProperties = {
   display: "flex",
-  justifyContent: "space-between",
-  gap: 12,
-  alignItems: "flex-start",
+  justifyContent: "flex-end",
   marginBottom: 16,
-};
-
-const sub: React.CSSProperties = {
-  fontSize: 13,
-  color: "#6b7280",
-  marginTop: 6,
 };
 
 const empty: React.CSSProperties = {

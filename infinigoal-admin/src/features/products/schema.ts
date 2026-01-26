@@ -424,6 +424,100 @@
 
 //////////////
 
+// import { z } from "zod";
+// import type { ProductImageUI } from "@/features/images/types";
+
+// /* =========================================================
+//    JSONB SAFE TYPE
+// ========================================================= */
+// export type JsonObject = Record<string, unknown>;
+
+// /** Strict JSON object schema for jsonb */
+// const jsonObjectSchema = z.record(z.string(), z.unknown());
+
+// /**
+//  * Accept:
+//  * - object (from AttributesEditor)
+//  * - stringified JSON (from textarea)
+//  * - empty/undefined -> undefined
+//  */
+// const jsonObjectFromInput = z.preprocess((val): JsonObject | undefined => {
+//   if (val === undefined || val === null || val === "") return undefined;
+
+//   // already an object
+//   if (typeof val === "object") return val as JsonObject;
+
+//   // string fallback
+//   if (typeof val === "string") {
+//     try {
+//       return JSON.parse(val) as JsonObject;
+//     } catch {
+//       return undefined;
+//     }
+//   }
+
+//   return undefined;
+// }, jsonObjectSchema);
+
+// /* =========================================================
+//    PRODUCT SCHEMA (maps to public.products)
+// ========================================================= */
+// export const productSchema = z.object({
+//   name: z.string().min(3, "Product name must be at least 3 characters"),
+//   slug: z.string().min(3, "Slug must be at least 3 characters"),
+
+//   short_description: z.string().optional(),
+//   description: z.string().min(10, "Description must be at least 10 characters"),
+
+//   brand: z.string().optional(),
+
+//   main_category: z.string().min(2, "Main category is required"),
+//   sub_category: z.string().optional(),
+
+//   mrp: z.number().optional(),
+//   price: z.number().positive("Price must be greater than 0"),
+
+//   stock: z.number().int().nonnegative("Stock cannot be negative"),
+//   is_active: z.boolean(),
+
+//   attributes_schema: jsonObjectFromInput.optional(),
+// });
+
+// export type ProductFormValues = z.infer<typeof productSchema>;
+
+// /* =========================================================
+//    VARIANT SCHEMA (maps to public.product_variants)
+// ========================================================= */
+// export const variantSchema = z.object({
+//   variant_name: z.string().min(2, "Variant name is required"),
+//   short_label: z.string().optional(),
+
+//   price: z.number().positive("Variant price must be greater than 0"),
+//   mrp: z.number().optional(),
+
+//   stock: z.number().int().nonnegative("Stock cannot be negative"),
+//   is_default: z.boolean(),
+
+//   attributes: jsonObjectFromInput.optional(),
+// });
+
+// export type VariantFormValues = z.infer<typeof variantSchema>;
+
+// /* =========================================================
+//    UI-ONLY VARIANT MODEL
+// ========================================================= */
+// export type VariantUI = VariantFormValues & {
+//   id: string; // UI only
+//   images: ProductImageUI[];
+// };
+
+
+
+
+////////// ******* working on the duplicate issues
+
+
+
 import { z } from "zod";
 import type { ProductImageUI } from "@/features/images/types";
 
@@ -432,32 +526,40 @@ import type { ProductImageUI } from "@/features/images/types";
 ========================================================= */
 export type JsonObject = Record<string, unknown>;
 
-/** Strict JSON object schema for jsonb */
-const jsonObjectSchema = z.record(z.string(), z.unknown());
+/**
+ * ✅ CRITICAL FIX
+ * Allow undefined AFTER preprocess so edit forms do not block
+ */
+const jsonObjectSchema = z
+  .record(z.string(), z.unknown())
+  .optional();
 
 /**
  * Accept:
  * - object (from AttributesEditor)
  * - stringified JSON (from textarea)
- * - empty/undefined -> undefined
+ * - empty / null / undefined → undefined
  */
-const jsonObjectFromInput = z.preprocess((val): JsonObject | undefined => {
-  if (val === undefined || val === null || val === "") return undefined;
+const jsonObjectFromInput = z.preprocess(
+  (val): JsonObject | undefined => {
+    if (val === undefined || val === null || val === "") return undefined;
 
-  // already an object
-  if (typeof val === "object") return val as JsonObject;
+    // already an object
+    if (typeof val === "object") return val as JsonObject;
 
-  // string fallback
-  if (typeof val === "string") {
-    try {
-      return JSON.parse(val) as JsonObject;
-    } catch {
-      return undefined;
+    // string fallback
+    if (typeof val === "string") {
+      try {
+        return JSON.parse(val) as JsonObject;
+      } catch {
+        return undefined;
+      }
     }
-  }
 
-  return undefined;
-}, jsonObjectSchema);
+    return undefined;
+  },
+  jsonObjectSchema
+);
 
 /* =========================================================
    PRODUCT SCHEMA (maps to public.products)
@@ -480,6 +582,12 @@ export const productSchema = z.object({
   stock: z.number().int().nonnegative("Stock cannot be negative"),
   is_active: z.boolean(),
 
+  /**
+   * ✅ Now SAFE for:
+   * - null from DB
+   * - untouched edit forms
+   * - empty attributes
+   */
   attributes_schema: jsonObjectFromInput.optional(),
 });
 
@@ -498,6 +606,9 @@ export const variantSchema = z.object({
   stock: z.number().int().nonnegative("Stock cannot be negative"),
   is_default: z.boolean(),
 
+  /**
+   * Same safe behavior for variants
+   */
   attributes: jsonObjectFromInput.optional(),
 });
 
