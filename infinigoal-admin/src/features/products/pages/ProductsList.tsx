@@ -611,6 +611,8 @@ export default function ProductsList() {
     setLoading(false);
   }
 
+
+  
   /* ================= STATUS TOGGLE ================= */
 
   async function toggleStatus(product: ProductRow) {

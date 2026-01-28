@@ -758,6 +758,228 @@
 ///////////////////// ************** above code worked before the UI UX designs
 
 
+// import VariantImagesManager from "../images/VariantImagesManager";
+// import AttributesEditor from "./AttributesEditor";
+// import type { VariantUI } from "../schema";
+
+// type Props = {
+//   variant: VariantUI;
+//   onUpdate: (v: VariantUI) => void;
+//   onDelete: () => void;
+// };
+
+// export default function VariantCard({ variant, onUpdate, onDelete }: Props) {
+//   return (
+//     <div style={card}>
+//       <header style={header}>
+//         <div>
+//           <strong style={title}>{variant.variant_name}</strong>
+//           {variant.is_default && <span style={badge}>Default</span>}
+//         </div>
+
+//         <button onClick={onDelete} style={deleteBtn}>
+//           Delete
+//         </button>
+//       </header>
+
+//       <div style={grid}>
+//         <Field label="Variant Name">
+//           <input
+//             value={variant.variant_name}
+//             onChange={(e) =>
+//               onUpdate({ ...variant, variant_name: e.target.value })
+//             }
+//             style={input}
+//           />
+//         </Field>
+
+//         <Field label="Short Label">
+//           <input
+//             value={variant.short_label ?? ""}
+//             onChange={(e) =>
+//               onUpdate({ ...variant, short_label: e.target.value })
+//             }
+//             style={input}
+//           />
+//         </Field>
+
+//         <Field label="Price">
+//           <input
+//             type="number"
+//             value={variant.price}
+//             onChange={(e) =>
+//               onUpdate({ ...variant, price: Number(e.target.value) })
+//             }
+//             style={input}
+//           />
+//         </Field>
+
+//         <Field label="MRP">
+//           <input
+//             type="number"
+//             value={variant.mrp ?? ""}
+//             onChange={(e) =>
+//               onUpdate({
+//                 ...variant,
+//                 mrp: e.target.value ? Number(e.target.value) : undefined,
+//               })
+//             }
+//             style={input}
+//           />
+//         </Field>
+
+//         <Field label="Stock">
+//           <input
+//             type="number"
+//             value={variant.stock}
+//             onChange={(e) =>
+//               onUpdate({ ...variant, stock: Number(e.target.value) })
+//             }
+//             style={input}
+//           />
+//         </Field>
+
+//         <label style={checkboxRow}>
+//           <input
+//             type="checkbox"
+//             checked={variant.is_default}
+//             onChange={(e) =>
+//               onUpdate({ ...variant, is_default: e.target.checked })
+//             }
+//           />
+//           Default Variant
+//         </label>
+//       </div>
+
+//       <Section title="Variant Attributes">
+//         <AttributesEditor
+//           value={variant.attributes}
+//           onChange={(attrs) =>
+//             onUpdate({ ...variant, attributes: attrs })
+//           }
+//         />
+//       </Section>
+
+//       <Section title="Variant Images">
+//         <VariantImagesManager
+//           images={variant.images}
+//           onChange={(imgs) =>
+//             onUpdate({ ...variant, images: imgs })
+//           }
+//         />
+//       </Section>
+//     </div>
+//   );
+// }
+
+// /* ================= UI HELPERS ================= */
+
+// function Field({
+//   label,
+//   children,
+// }: {
+//   label: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div>
+//       <div style={labelStyle}>{label}</div>
+//       {children}
+//     </div>
+//   );
+// }
+
+// function Section({
+//   title,
+//   children,
+// }: {
+//   title: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div style={{ marginTop: 18 }}>
+//       <h4 style={sectionTitle}>{title}</h4>
+//       {children}
+//     </div>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const card: React.CSSProperties = {
+//   marginTop: 20,
+//   padding: 20,
+//   borderRadius: 18,
+//   background: "#ffffff",
+//   boxShadow: "0 8px 26px rgba(0,0,0,0.06)",
+// };
+
+// const header: React.CSSProperties = {
+//   display: "flex",
+//   justifyContent: "space-between",
+//   marginBottom: 16,
+// };
+
+// const title: React.CSSProperties = {
+//   fontSize: 16,
+//   fontWeight: 800,
+// };
+
+// const badge: React.CSSProperties = {
+//   marginLeft: 10,
+//   padding: "4px 10px",
+//   background: "#111827",
+//   color: "#fff",
+//   borderRadius: 999,
+//   fontSize: 12,
+// };
+
+// const deleteBtn: React.CSSProperties = {
+//   background: "#ef4444",
+//   border: "none",
+//   color: "#fff",
+//   padding: "8px 12px",
+//   borderRadius: 10,
+//   cursor: "pointer",
+// };
+
+// const grid: React.CSSProperties = {
+//   display: "grid",
+//   gridTemplateColumns: "repeat(2, 1fr)",
+//   gap: 14,
+// };
+
+// const input: React.CSSProperties = {
+//   padding: "12px",
+//   borderRadius: 14,
+//   border: "1px solid #e5e7eb",
+// };
+
+// const labelStyle: React.CSSProperties = {
+//   fontSize: 13,
+//   fontWeight: 600,
+//   marginBottom: 6,
+// };
+
+// const sectionTitle: React.CSSProperties = {
+//   fontSize: 14,
+//   fontWeight: 700,
+//   marginBottom: 10,
+// };
+
+// const checkboxRow: React.CSSProperties = {
+//   display: "flex",
+//   alignItems: "center",
+//   gap: 8,
+//   paddingTop: 22,
+// };
+
+
+
+
+
+/////////// ******* above code worked before the SKU
+
 import VariantImagesManager from "../images/VariantImagesManager";
 import AttributesEditor from "./AttributesEditor";
 import type { VariantUI } from "../schema";
@@ -798,6 +1020,18 @@ export default function VariantCard({ variant, onUpdate, onDelete }: Props) {
             value={variant.short_label ?? ""}
             onChange={(e) =>
               onUpdate({ ...variant, short_label: e.target.value })
+            }
+            style={input}
+          />
+        </Field>
+
+        {/* ✅ SKU FIELD (ADDED – SAFE) */}
+        <Field label="SKU">
+          <input
+            value={variant.sku ?? ""}
+            placeholder="Optional SKU"
+            onChange={(e) =>
+              onUpdate({ ...variant, sku: e.target.value })
             }
             style={input}
           />

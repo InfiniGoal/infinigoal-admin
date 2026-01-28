@@ -518,6 +518,233 @@
 
 
 
+// import { z } from "zod";
+// import type { ProductImageUI } from "@/features/images/types";
+
+// /* =========================================================
+//    JSONB SAFE TYPE
+// ========================================================= */
+// export type JsonObject = Record<string, unknown>;
+
+// /**
+//  * ✅ CRITICAL FIX
+//  * Allow undefined AFTER preprocess so edit forms do not block
+//  */
+// const jsonObjectSchema = z
+//   .record(z.string(), z.unknown())
+//   .optional();
+
+// /**
+//  * Accept:
+//  * - object (from AttributesEditor)
+//  * - stringified JSON (from textarea)
+//  * - empty / null / undefined → undefined
+//  */
+// const jsonObjectFromInput = z.preprocess(
+//   (val): JsonObject | undefined => {
+//     if (val === undefined || val === null || val === "") return undefined;
+
+//     // already an object
+//     if (typeof val === "object") return val as JsonObject;
+
+//     // string fallback
+//     if (typeof val === "string") {
+//       try {
+//         return JSON.parse(val) as JsonObject;
+//       } catch {
+//         return undefined;
+//       }
+//     }
+
+//     return undefined;
+//   },
+//   jsonObjectSchema
+// );
+
+// /* =========================================================
+//    PRODUCT SCHEMA (maps to public.products)
+// ========================================================= */
+// export const productSchema = z.object({
+//   name: z.string().min(3, "Product name must be at least 3 characters"),
+//   slug: z.string().min(3, "Slug must be at least 3 characters"),
+
+//   short_description: z.string().optional(),
+//   description: z.string().min(10, "Description must be at least 10 characters"),
+
+//   brand: z.string().optional(),
+
+//   main_category: z.string().min(2, "Main category is required"),
+//   sub_category: z.string().optional(),
+
+//   mrp: z.number().optional(),
+//   price: z.number().positive("Price must be greater than 0"),
+
+//   stock: z.number().int().nonnegative("Stock cannot be negative"),
+//   is_active: z.boolean(),
+
+//   /**
+//    * ✅ Now SAFE for:
+//    * - null from DB
+//    * - untouched edit forms
+//    * - empty attributes
+//    */
+//   attributes_schema: jsonObjectFromInput.optional(),
+// });
+
+// export type ProductFormValues = z.infer<typeof productSchema>;
+
+// /* =========================================================
+//    VARIANT SCHEMA (maps to public.product_variants)
+// ========================================================= */
+// export const variantSchema = z.object({
+//   variant_name: z.string().min(2, "Variant name is required"),
+//   short_label: z.string().optional(),
+
+//   price: z.number().positive("Variant price must be greater than 0"),
+//   mrp: z.number().optional(),
+
+//   stock: z.number().int().nonnegative("Stock cannot be negative"),
+//   is_default: z.boolean(),
+
+//   /**
+//    * Same safe behavior for variants
+//    */
+//   attributes: jsonObjectFromInput.optional(),
+// });
+
+// export type VariantFormValues = z.infer<typeof variantSchema>;
+
+// /* =========================================================
+//    UI-ONLY VARIANT MODEL
+// ========================================================= */
+// export type VariantUI = VariantFormValues & {
+//   id: string; // UI only
+//   images: ProductImageUI[];
+// };
+
+
+
+
+///////////// ********** above code worked before the tags
+
+
+// import { z } from "zod";
+// import type { ProductImageUI } from "@/features/images/types";
+
+// /* =========================================================
+//    JSONB SAFE TYPE
+// ========================================================= */
+// export type JsonObject = Record<string, unknown>;
+
+// /**
+//  * ✅ CRITICAL FIX
+//  * Allow undefined AFTER preprocess so edit forms do not block
+//  */
+// const jsonObjectSchema = z
+//   .record(z.string(), z.unknown())
+//   .optional();
+
+// /**
+//  * Accept:
+//  * - object (from AttributesEditor)
+//  * - stringified JSON (from textarea)
+//  * - empty / null / undefined → undefined
+//  */
+// const jsonObjectFromInput = z.preprocess(
+//   (val): JsonObject | undefined => {
+//     if (val === undefined || val === null || val === "") return undefined;
+
+//     // already an object
+//     if (typeof val === "object") return val as JsonObject;
+
+//     // string fallback
+//     if (typeof val === "string") {
+//       try {
+//         return JSON.parse(val) as JsonObject;
+//       } catch {
+//         return undefined;
+//       }
+//     }
+
+//     return undefined;
+//   },
+//   jsonObjectSchema
+// );
+
+// /* =========================================================
+//    PRODUCT SCHEMA (maps to public.products)
+// ========================================================= */
+// export const productSchema = z.object({
+//   name: z.string().min(3, "Product name must be at least 3 characters"),
+//   slug: z.string().min(3, "Slug must be at least 3 characters"),
+
+//   short_description: z.string().optional(),
+//   description: z.string().min(10, "Description must be at least 10 characters"),
+
+//   brand: z.string().optional(),
+
+//   main_category: z.string().min(2, "Main category is required"),
+//   sub_category: z.string().optional(),
+
+//   mrp: z.number().optional(),
+//   price: z.number().positive("Price must be greater than 0"),
+
+//   stock: z.number().int().nonnegative("Stock cannot be negative"),
+//   is_active: z.boolean(),
+
+//   /**
+//    * ✅ SAFE JSON schema
+//    */
+//   attributes_schema: jsonObjectFromInput.optional(),
+
+//   /* ======================================================
+//      🆕 ADVANCED E-COMMERCE FIELDS (OPTIONAL, NON-BREAKING)
+//      These map directly to new DB columns
+//   ====================================================== */
+//   tags: z.array(z.string()).optional(),
+//   search_keywords: z.array(z.string()).optional(),
+//   synonyms: z.array(z.string()).optional(),
+//   badges: z.array(z.string()).optional(),
+//   is_featured: z.boolean().optional(),
+// });
+
+// export type ProductFormValues = z.infer<typeof productSchema>;
+
+// /* =========================================================
+//    VARIANT SCHEMA (maps to public.product_variants)
+//    ❌ NO CHANGES HERE
+// ========================================================= */
+// export const variantSchema = z.object({
+//   variant_name: z.string().min(2, "Variant name is required"),
+//   short_label: z.string().optional(),
+
+//   price: z.number().positive("Variant price must be greater than 0"),
+//   mrp: z.number().optional(),
+
+//   stock: z.number().int().nonnegative("Stock cannot be negative"),
+//   is_default: z.boolean(),
+
+//   /**
+//    * Same safe behavior for variants
+//    */
+//   attributes: jsonObjectFromInput.optional(),
+// });
+
+// export type VariantFormValues = z.infer<typeof variantSchema>;
+
+// /* =========================================================
+//    UI-ONLY VARIANT MODEL
+// ========================================================= */
+// export type VariantUI = VariantFormValues & {
+//   id: string; // UI only
+//   images: ProductImageUI[];
+// };
+
+
+
+////////// ******* above code worked before the sku code
+
+
 import { z } from "zod";
 import type { ProductImageUI } from "@/features/images/types";
 
@@ -526,28 +753,16 @@ import type { ProductImageUI } from "@/features/images/types";
 ========================================================= */
 export type JsonObject = Record<string, unknown>;
 
-/**
- * ✅ CRITICAL FIX
- * Allow undefined AFTER preprocess so edit forms do not block
- */
 const jsonObjectSchema = z
   .record(z.string(), z.unknown())
   .optional();
 
-/**
- * Accept:
- * - object (from AttributesEditor)
- * - stringified JSON (from textarea)
- * - empty / null / undefined → undefined
- */
 const jsonObjectFromInput = z.preprocess(
   (val): JsonObject | undefined => {
     if (val === undefined || val === null || val === "") return undefined;
 
-    // already an object
     if (typeof val === "object") return val as JsonObject;
 
-    // string fallback
     if (typeof val === "string") {
       try {
         return JSON.parse(val) as JsonObject;
@@ -562,7 +777,7 @@ const jsonObjectFromInput = z.preprocess(
 );
 
 /* =========================================================
-   PRODUCT SCHEMA (maps to public.products)
+   PRODUCT SCHEMA
 ========================================================= */
 export const productSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters"),
@@ -582,23 +797,25 @@ export const productSchema = z.object({
   stock: z.number().int().nonnegative("Stock cannot be negative"),
   is_active: z.boolean(),
 
-  /**
-   * ✅ Now SAFE for:
-   * - null from DB
-   * - untouched edit forms
-   * - empty attributes
-   */
   attributes_schema: jsonObjectFromInput.optional(),
+
+  tags: z.array(z.string()).optional(),
+  search_keywords: z.array(z.string()).optional(),
+  synonyms: z.array(z.string()).optional(),
+  badges: z.array(z.string()).optional(),
+  is_featured: z.boolean().optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;
 
 /* =========================================================
-   VARIANT SCHEMA (maps to public.product_variants)
+   VARIANT SCHEMA (SKU ADDED — NON BREAKING)
 ========================================================= */
 export const variantSchema = z.object({
   variant_name: z.string().min(2, "Variant name is required"),
   short_label: z.string().optional(),
+
+  sku: z.string().optional(), // 🆕 SKU (SAFE, OPTIONAL)
 
   price: z.number().positive("Variant price must be greater than 0"),
   mrp: z.number().optional(),
@@ -606,9 +823,6 @@ export const variantSchema = z.object({
   stock: z.number().int().nonnegative("Stock cannot be negative"),
   is_default: z.boolean(),
 
-  /**
-   * Same safe behavior for variants
-   */
   attributes: jsonObjectFromInput.optional(),
 });
 
@@ -618,6 +832,6 @@ export type VariantFormValues = z.infer<typeof variantSchema>;
    UI-ONLY VARIANT MODEL
 ========================================================= */
 export type VariantUI = VariantFormValues & {
-  id: string; // UI only
+  id: string;
   images: ProductImageUI[];
 };

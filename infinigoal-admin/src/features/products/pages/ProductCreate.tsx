@@ -1008,6 +1008,206 @@
 
 
 
+// import { useState } from "react";
+
+// import ProductForm from "../components/ProductForm";
+// import ProductImagesManager from "../images/ProductImagesManager";
+// import VariantsManager from "../components/VariantsManager";
+
+// import type { ProductFormValues, VariantUI } from "../schema";
+// import type { ProductImageUI } from "@/features/images/types";
+
+// import { supabase } from "@/lib/supabaseClient";
+// import { saveImages } from "../services/saveImages";
+
+// export default function ProductCreate() {
+//   const [productImages, setProductImages] = useState<ProductImageUI[]>([]);
+//   const [variants, setVariants] = useState<VariantUI[]>([]);
+//   const [saving, setSaving] = useState(false);
+
+//   /* ======================================================
+//      SUBMIT
+//   ====================================================== */
+//   const submit = async (product: ProductFormValues) => {
+//     if (saving) return;
+//     setSaving(true);
+
+//     try {
+//       if (productImages.length === 0) {
+//         // throw new Error("At least one product image is required");
+
+//         alert("Please add at least one product image");
+//         return;
+//       }
+
+//       /* ---------- 1. CREATE PRODUCT ---------- */
+//       const { data: productRow, error: productError } = await supabase
+//         .from("products")
+//         .insert({
+//           ...product,
+//           thumbnail: "", // will be updated later if needed
+//         })
+//         .select()
+//         .single();
+
+//       if (productError || !productRow) {
+//         throw productError;
+//       }
+
+//       const productId = productRow.id;
+
+//       /* ---------- 2. CREATE VARIANTS ---------- */
+//       const createdVariants: VariantUI[] = [];
+
+//       for (const variant of variants) {
+//         const { data: variantRow, error } = await supabase
+//           .from("product_variants")
+//           .insert({
+//             product_id: productId,
+//             variant_name: variant.variant_name,
+//             short_label: variant.short_label,
+//             price: variant.price,
+//             mrp: variant.mrp,
+//             stock: variant.stock,
+//             is_default: variant.is_default,
+//             attributes: variant.attributes,
+//           })
+//           .select()
+//           .single();
+
+//         if (error || !variantRow) {
+//           throw error;
+//         }
+
+//         createdVariants.push({
+//           ...variant,
+//           id: variantRow.id,
+//         });
+//       }
+
+//       /* ---------- 3. SAVE ALL IMAGES (UNIFIED) ---------- */
+//       await saveImages({
+//         productId,
+//         productImages,
+//         variants: createdVariants,
+//       });
+
+//       /* ---------- DONE ---------- */
+//       alert("✅ Product published successfully");
+
+//       setProductImages([]);
+//       setVariants([]);
+//     } catch (err) {
+//       console.error(err);
+//       alert("Product save failed. Check console.");
+//     } finally {
+//       setSaving(false);
+//     }
+//   };
+
+//   /* ======================================================
+//      UI
+//   ====================================================== */
+//   return (
+//     <div style={page}>
+//       <h1 style={heading}>Create New Product</h1>
+
+//       <Card>
+//         <SectionTitle
+//           title="Product Information"
+//           subtitle="Basic details shown to customers"
+//         />
+//         <ProductForm onSubmit={submit} />
+//       </Card>
+
+//       <Card>
+//         <SectionTitle
+//           title="Product Images"
+//           subtitle="Primary image is used as thumbnail"
+//         />
+//         <ProductImagesManager
+//           images={productImages}
+//           onChange={setProductImages}
+//         />
+//       </Card>
+
+//       <Card>
+//         <SectionTitle
+//           title="Variants & Pricing"
+//           subtitle="Create multiple weight / pack options"
+//         />
+//         <VariantsManager
+//           variants={variants}
+//           onChange={setVariants}
+//         />
+//       </Card>
+//     </div>
+//   );
+// }
+
+// /* ======================================================
+//    STYLES
+// ====================================================== */
+
+// const page: React.CSSProperties = {
+//   background: "#F7F8FA",
+//   padding: 20,
+//   maxWidth: 1400,
+//   margin: "0 auto",
+//   paddingBottom: 120,
+// };
+
+// const heading: React.CSSProperties = {
+//   fontSize: 26,
+//   fontWeight: 800,
+//   marginBottom: 24,
+//   color: "#1A1A1A",
+// };
+
+// function Card({ children }: { children: React.ReactNode }) {
+//   return (
+//     <div
+//       style={{
+//         background: "#FFFFFF",
+//         padding: 22,
+//         borderRadius: 18,
+//         marginBottom: 24,
+//         boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+//       }}
+//     >
+//       {children}
+//     </div>
+//   );
+// }
+
+// function SectionTitle({
+//   title,
+//   subtitle,
+// }: {
+//   title: string;
+//   subtitle: string;
+// }) {
+//   return (
+//     <div style={{ marginBottom: 18 }}>
+//       <div style={{ fontSize: 18, fontWeight: 800 }}>{title}</div>
+//       <div
+//         style={{
+//           fontSize: 13,
+//           color: "#6C7A89",
+//           marginTop: 4,
+//         }}
+//       >
+//         {subtitle}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+////////////// ******* above code worked before the sku add
+
 import { useState } from "react";
 
 import ProductForm from "../components/ProductForm";
@@ -1034,8 +1234,6 @@ export default function ProductCreate() {
 
     try {
       if (productImages.length === 0) {
-        // throw new Error("At least one product image is required");
-
         alert("Please add at least one product image");
         return;
       }
@@ -1045,7 +1243,7 @@ export default function ProductCreate() {
         .from("products")
         .insert({
           ...product,
-          thumbnail: "", // will be updated later if needed
+          thumbnail: "",
         })
         .select()
         .single();
@@ -1066,6 +1264,7 @@ export default function ProductCreate() {
             product_id: productId,
             variant_name: variant.variant_name,
             short_label: variant.short_label,
+            sku: variant.sku, // ✅ SKU SAVED
             price: variant.price,
             mrp: variant.mrp,
             stock: variant.stock,
@@ -1085,14 +1284,13 @@ export default function ProductCreate() {
         });
       }
 
-      /* ---------- 3. SAVE ALL IMAGES (UNIFIED) ---------- */
+      /* ---------- 3. SAVE ALL IMAGES ---------- */
       await saveImages({
         productId,
         productImages,
         variants: createdVariants,
       });
 
-      /* ---------- DONE ---------- */
       alert("✅ Product published successfully");
 
       setProductImages([]);
