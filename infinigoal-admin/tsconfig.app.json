@@ -14,7 +14,8 @@
     "noEmit": true,
 
     /* Bundler mode (Vite recommended) */
-    "moduleResolution": "bundler",
+    // "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

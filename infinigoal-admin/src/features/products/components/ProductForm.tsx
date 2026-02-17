@@ -1754,12 +1754,411 @@
 ///////////// above code worked before the tag add
 
 
+// import { useEffect } from "react";
+// import { useForm, Controller } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { productSchema } from "../schema";
+// import type { ProductFormValues } from "../schema";
+// import AttributesEditor from "./AttributesEditor";
+
+// type Props = {
+//   initialValues?: Partial<ProductFormValues> & { id?: string };
+//   onSubmit: (values: ProductFormValues) => void;
+//   submitLabel?: string;
+// };
+
+// const BADGE_OPTIONS = [
+//   "BEST_SELLER",
+//   "TRENDING",
+//   "NEW",
+//   "ORGANIC",
+//   "LOW_PRICE",
+//   "LIMITED_STOCK",
+//   "OFFER",
+// ];
+
+// export default function ProductForm({
+//   initialValues,
+//   onSubmit,
+//   submitLabel = "Save Product",
+// }: Props) {
+//   const form = useForm<ProductFormValues>({
+//     resolver: zodResolver(productSchema),
+//     defaultValues: {
+//       name: "",
+//       slug: "",
+//       short_description: "",
+//       description: "",
+//       brand: "",
+//       main_category: "",
+//       sub_category: "",
+//       mrp: undefined,
+//       price: 1,
+//       stock: 0,
+//       is_active: true,
+//       attributes_schema: undefined,
+
+//       /* 🆕 ADVANCED (SAFE DEFAULTS) */
+//       tags: [],
+//       search_keywords: [],
+//       synonyms: [],
+//       badges: [],
+//       is_featured: false,
+//     },
+//     mode: "onSubmit",
+//   });
+
+//   const {
+//     register,
+//     handleSubmit,
+//     control,
+//     watch,
+//     reset,
+//     setValue,
+//   } = form;
+
+//   /* ===================== RESET (SAFE) ===================== */
+//   useEffect(() => {
+//     if (!initialValues?.id) return;
+
+//     reset({
+//       ...initialValues,
+//       attributes_schema:
+//         initialValues.attributes_schema ?? undefined,
+//       tags: initialValues.tags ?? [],
+//       search_keywords: initialValues.search_keywords ?? [],
+//       synonyms: initialValues.synonyms ?? [],
+//       badges: initialValues.badges ?? [],
+//       is_featured: initialValues.is_featured ?? false,
+//     });
+//   }, [initialValues?.id, reset]);
+
+//   const debugSubmit = handleSubmit(
+//     (values) => onSubmit(values),
+//     (errors) => console.error("Validation errors:", errors)
+//   );
+
+//   /* ===================== HELPERS ===================== */
+
+//   const toArray = (v?: string) =>
+//     v
+//       ?.split(",")
+//       .map((s) => s.trim())
+//       .filter(Boolean) ?? [];
+
+//   const badges = watch("badges") || [];
+
+//   return (
+//     <form onSubmit={debugSubmit} style={pageGrid}>
+//       {/* ================= LEFT / PRIMARY ================= */}
+//       <section style={primaryCol}>
+//         <Card title="Product Information">
+//           <FloatingInput label="Product Name">
+//             <input {...register("name")} style={inputBase} />
+//           </FloatingInput>
+
+//           <FloatingInput label="Slug">
+//             <input {...register("slug")} style={inputBase} />
+//           </FloatingInput>
+
+//           <FloatingInput label="Short Description">
+//             <textarea {...register("short_description")} style={textareaBase} />
+//           </FloatingInput>
+
+//           <FloatingInput label="Description">
+//             <textarea {...register("description")} style={textareaBase} />
+//           </FloatingInput>
+//         </Card>
+
+//         <Card title="Pricing & Inventory">
+//           <Row>
+//             <FloatingInput label="MRP">
+//               <input
+//                 type="number"
+//                 {...register("mrp", { valueAsNumber: true })}
+//                 style={inputBase}
+//               />
+//             </FloatingInput>
+
+//             <FloatingInput label="Selling Price">
+//               <input
+//                 type="number"
+//                 {...register("price", { valueAsNumber: true })}
+//                 style={inputBase}
+//               />
+//             </FloatingInput>
+//           </Row>
+
+//           <FloatingInput label="Stock">
+//             <input
+//               type="number"
+//               {...register("stock", { valueAsNumber: true })}
+//               style={inputBase}
+//             />
+//           </FloatingInput>
+//         </Card>
+
+//         <Card title="Product Attributes">
+//           <Controller
+//             control={control}
+//             name="attributes_schema"
+//             render={({ field }) => (
+//               <AttributesEditor
+//                 value={field.value}
+//                 onChange={field.onChange}
+//               />
+//             )}
+//           />
+//         </Card>
+//       </section>
+
+//       {/* ================= RIGHT / SIDEBAR ================= */}
+//       <aside style={secondaryCol}>
+//         <Card title="Product Meta">
+//           <FloatingInput label="Brand">
+//             <input {...register("brand")} style={inputBase} />
+//           </FloatingInput>
+
+//           <FloatingInput label="Main Category">
+//             <input {...register("main_category")} style={inputBase} />
+//           </FloatingInput>
+
+//           <FloatingInput label="Sub Category">
+//             <input {...register("sub_category")} style={inputBase} />
+//           </FloatingInput>
+
+//           <div style={switchRow}>
+//             <span>Active Product</span>
+//             <input type="checkbox" {...register("is_active")} />
+//           </div>
+//         </Card>
+
+//         {/* ================= 🆕 DISCOVERY & MARKETING ================= */}
+//         <Card title="Discovery & Marketing">
+//           <FloatingInput label="Tags (comma separated)">
+//             <input
+//               style={inputBase}
+//               onBlur={(e) =>
+//                 setValue("tags", toArray(e.target.value))
+//               }
+//               defaultValue={initialValues?.tags?.join(", ") ?? ""}
+//             />
+//           </FloatingInput>
+
+//           <FloatingInput label="Search Keywords">
+//             <input
+//               style={inputBase}
+//               onBlur={(e) =>
+//                 setValue("search_keywords", toArray(e.target.value))
+//               }
+//               defaultValue={
+//                 initialValues?.search_keywords?.join(", ") ?? ""
+//               }
+//             />
+//           </FloatingInput>
+
+//           <FloatingInput label="Synonyms">
+//             <input
+//               style={inputBase}
+//               onBlur={(e) =>
+//                 setValue("synonyms", toArray(e.target.value))
+//               }
+//               defaultValue={initialValues?.synonyms?.join(", ") ?? ""}
+//             />
+//           </FloatingInput>
+
+//           <div style={{ marginTop: 14 }}>
+//             <div style={{ fontWeight: 700, marginBottom: 8 }}>
+//               Badges (max 2)
+//             </div>
+
+//             {BADGE_OPTIONS.map((badge) => (
+//               <label key={badge} style={badgeRow}>
+//                 <input
+//                   type="checkbox"
+//                   checked={badges.includes(badge)}
+//                   onChange={(e) => {
+//                     if (e.target.checked && badges.length >= 2)
+//                       return;
+
+//                     setValue(
+//                       "badges",
+//                       e.target.checked
+//                         ? [...badges, badge]
+//                         : badges.filter((b) => b !== badge)
+//                     );
+//                   }}
+//                 />
+//                 <span>{badge}</span>
+//               </label>
+//             ))}
+//           </div>
+
+//           <div style={switchRow}>
+//             <span>Featured Product</span>
+//             <input type="checkbox" {...register("is_featured")} />
+//           </div>
+//         </Card>
+
+//         <button type="submit" style={saveBtn}>
+//           {submitLabel}
+//         </button>
+//       </aside>
+//     </form>
+//   );
+// }
+
+// /* ================= REUSABLE UI ================= */
+
+// function Card({
+//   title,
+//   children,
+// }: {
+//   title: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div style={card}>
+//       <h3 style={cardTitle}>{title}</h3>
+//       {children}
+//     </div>
+//   );
+// }
+
+// function Row({ children }: { children: React.ReactNode }) {
+//   return <div style={row}>{children}</div>;
+// }
+
+// function FloatingInput({
+//   label,
+//   children,
+// }: {
+//   label: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div style={inputWrapper}>
+//       <label style={floatingLabel}>{label}</label>
+//       {children}
+//     </div>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const pageGrid: React.CSSProperties = {
+//   display: "grid",
+//   gridTemplateColumns: "2.5fr 1fr",
+//   gap: 24,
+//   alignItems: "flex-start",
+// };
+
+// const primaryCol: React.CSSProperties = {
+//   display: "flex",
+//   flexDirection: "column",
+//   gap: 24,
+// };
+
+// const secondaryCol: React.CSSProperties = {
+//   display: "flex",
+//   flexDirection: "column",
+//   gap: 18,
+//   position: "sticky",
+//   top: 20,
+// };
+
+// const card: React.CSSProperties = {
+//   background: "#ffffff",
+//   borderRadius: 18,
+//   padding: 20,
+//   boxShadow: "0 8px 26px rgba(0,0,0,0.09)",
+// };
+
+// const cardTitle: React.CSSProperties = {
+//   fontSize: 15,
+//   fontWeight: 800,
+//   marginBottom: 16,
+// };
+
+// const row: React.CSSProperties = {
+//   display: "grid",
+//   gridTemplateColumns: "1fr 1fr",
+//   gap: 14,
+// };
+
+// const inputWrapper: React.CSSProperties = {
+//   position: "relative",
+//   marginBottom: 18,
+//   marginRight: 25,
+// };
+
+// const floatingLabel: React.CSSProperties = {
+//   position: "absolute",
+//   top: -8,
+//   left: 12,
+//   background: "#ffffff",
+//   padding: "0 6px",
+//   fontSize: 12,
+//   fontWeight: 600,
+//   color: "#6C7A89",
+// };
+
+// const inputBase: React.CSSProperties = {
+//   width: "100%",
+//   padding: "14px 12px",
+//   borderRadius: 14,
+//   border: "1px solid #E3E3E3",
+//   background: "#FAFAFA",
+//   fontSize: 14,
+// };
+
+// const textareaBase: React.CSSProperties = {
+//   ...inputBase,
+//   minHeight: 90,
+// };
+
+// const switchRow: React.CSSProperties = {
+//   display: "flex",
+//   justifyContent: "space-between",
+//   alignItems: "center",
+//   paddingTop: 14,
+//   marginTop: 10,
+//   borderTop: "1px solid #eee",
+// };
+
+// const badgeRow: React.CSSProperties = {
+//   display: "flex",
+//   gap: 8,
+//   alignItems: "center",
+//   marginBottom: 6,
+// };
+
+// const saveBtn: React.CSSProperties = {
+//   backgroundColor: "#bf9602",
+//   padding: "14px",
+//   borderRadius: 16,
+//   border: "none",
+//   color: "#fff",
+//   fontWeight: 800,
+//   fontSize: 16,
+//   cursor: "pointer",
+// };
+
+
+
+
+////////////// ******** above code worked before the motherboard reset
+
+
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "../schema";
 import type { ProductFormValues } from "../schema";
 import AttributesEditor from "./AttributesEditor";
+import AdminCategorySelector from "@/shared/selectors/AdminCategorySelector";
+import BrandSelector from "@/shared/selectors/BrandSelector";
+import TagSelector from "@/shared/selectors/TagSelector";
 
 type Props = {
   initialValues?: Partial<ProductFormValues> & { id?: string };
@@ -1798,7 +2197,7 @@ export default function ProductForm({
       is_active: true,
       attributes_schema: undefined,
 
-      /* 🆕 ADVANCED (SAFE DEFAULTS) */
+      /* ADVANCED */
       tags: [],
       search_keywords: [],
       synonyms: [],
@@ -1808,23 +2207,15 @@ export default function ProductForm({
     mode: "onSubmit",
   });
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    reset,
-    setValue,
-  } = form;
+  const { register, handleSubmit, control, watch, reset, setValue } = form;
 
-  /* ===================== RESET (SAFE) ===================== */
+  /* ===================== RESET (EDIT SAFE) ===================== */
   useEffect(() => {
     if (!initialValues?.id) return;
 
     reset({
       ...initialValues,
-      attributes_schema:
-        initialValues.attributes_schema ?? undefined,
+      attributes_schema: initialValues.attributes_schema ?? undefined,
       tags: initialValues.tags ?? [],
       search_keywords: initialValues.search_keywords ?? [],
       synonyms: initialValues.synonyms ?? [],
@@ -1833,24 +2224,16 @@ export default function ProductForm({
     });
   }, [initialValues?.id, reset]);
 
-  const debugSubmit = handleSubmit(
+  const submitHandler = handleSubmit(
     (values) => onSubmit(values),
     (errors) => console.error("Validation errors:", errors)
   );
 
-  /* ===================== HELPERS ===================== */
-
-  const toArray = (v?: string) =>
-    v
-      ?.split(",")
-      .map((s) => s.trim())
-      .filter(Boolean) ?? [];
-
   const badges = watch("badges") || [];
 
   return (
-    <form onSubmit={debugSubmit} style={pageGrid}>
-      {/* ================= LEFT / PRIMARY ================= */}
+    <form onSubmit={submitHandler} style={pageGrid}>
+      {/* ================= LEFT ================= */}
       <section style={primaryCol}>
         <Card title="Product Information">
           <FloatingInput label="Product Name">
@@ -1903,29 +2286,43 @@ export default function ProductForm({
             control={control}
             name="attributes_schema"
             render={({ field }) => (
-              <AttributesEditor
-                value={field.value}
-                onChange={field.onChange}
-              />
+              <AttributesEditor value={field.value} onChange={field.onChange} />
             )}
           />
         </Card>
       </section>
 
-      {/* ================= RIGHT / SIDEBAR ================= */}
+      {/* ================= RIGHT ================= */}
       <aside style={secondaryCol}>
         <Card title="Product Meta">
-          <FloatingInput label="Brand">
-            <input {...register("brand")} style={inputBase} />
-          </FloatingInput>
+          {/* ✅ BRAND SELECTOR */}
+          <Controller
+            control={control}
+            name="brand"
+            render={({ field }) => (
+              <BrandSelector value={field.value} onChange={field.onChange} />
+            )}
+          />
 
-          <FloatingInput label="Main Category">
-            <input {...register("main_category")} style={inputBase} />
-          </FloatingInput>
-
-          <FloatingInput label="Sub Category">
-            <input {...register("sub_category")} style={inputBase} />
-          </FloatingInput>
+          {/* ✅ CATEGORY SELECTOR */}
+          <Controller
+            control={control}
+            name="main_category"
+            render={({ field: mainField }) => (
+              <Controller
+                control={control}
+                name="sub_category"
+                render={({ field: subField }) => (
+                  <AdminCategorySelector
+                    mainValue={mainField.value}
+                    subValue={subField.value}
+                    onMainChange={mainField.onChange}
+                    onSubChange={subField.onChange}
+                  />
+                )}
+              />
+            )}
+          />
 
           <div style={switchRow}>
             <span>Active Product</span>
@@ -1933,36 +2330,31 @@ export default function ProductForm({
           </div>
         </Card>
 
-        {/* ================= 🆕 DISCOVERY & MARKETING ================= */}
+        {/* ================= DISCOVERY & MARKETING ================= */}
         <Card title="Discovery & Marketing">
-          <FloatingInput label="Tags (comma separated)">
-            <input
-              style={inputBase}
-              onBlur={(e) =>
-                setValue("tags", toArray(e.target.value))
-              }
-              defaultValue={initialValues?.tags?.join(", ") ?? ""}
-            />
-          </FloatingInput>
+          {/* ✅ TAG SELECTOR (AUTOCOMPLETE) */}
+          <Controller
+            control={control}
+            name="tags"
+            render={({ field }) => (
+              <TagSelector value={field.value ?? []} onChange={field.onChange} />
+            )}
+          />
 
-          <FloatingInput label="Search Keywords">
+          <FloatingInput label="Search Keywords (comma separated)">
             <input
               style={inputBase}
               onBlur={(e) =>
                 setValue("search_keywords", toArray(e.target.value))
               }
-              defaultValue={
-                initialValues?.search_keywords?.join(", ") ?? ""
-              }
+              defaultValue={initialValues?.search_keywords?.join(", ") ?? ""}
             />
           </FloatingInput>
 
-          <FloatingInput label="Synonyms">
+          <FloatingInput label="Synonyms (comma separated)">
             <input
               style={inputBase}
-              onBlur={(e) =>
-                setValue("synonyms", toArray(e.target.value))
-              }
+              onBlur={(e) => setValue("synonyms", toArray(e.target.value))}
               defaultValue={initialValues?.synonyms?.join(", ") ?? ""}
             />
           </FloatingInput>
@@ -1978,8 +2370,7 @@ export default function ProductForm({
                   type="checkbox"
                   checked={badges.includes(badge)}
                   onChange={(e) => {
-                    if (e.target.checked && badges.length >= 2)
-                      return;
+                    if (e.target.checked && badges.length >= 2) return;
 
                     setValue(
                       "badges",
@@ -2008,15 +2399,17 @@ export default function ProductForm({
   );
 }
 
-/* ================= REUSABLE UI ================= */
+/* ================= HELPERS ================= */
 
-function Card({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+const toArray = (v?: string) =>
+  v
+    ?.split(",")
+    .map((s) => s.trim())
+    .filter(Boolean) ?? [];
+
+/* ================= UI HELPERS ================= */
+
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={card}>
       <h3 style={cardTitle}>{title}</h3>
@@ -2050,7 +2443,6 @@ const pageGrid: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "2.5fr 1fr",
   gap: 24,
-  alignItems: "flex-start",
 };
 
 const primaryCol: React.CSSProperties = {
@@ -2089,7 +2481,6 @@ const row: React.CSSProperties = {
 const inputWrapper: React.CSSProperties = {
   position: "relative",
   marginBottom: 18,
-  marginRight: 25,
 };
 
 const floatingLabel: React.CSSProperties = {
@@ -2143,3 +2534,4 @@ const saveBtn: React.CSSProperties = {
   fontSize: 16,
   cursor: "pointer",
 };
+
