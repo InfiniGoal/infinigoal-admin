@@ -142,3 +142,112 @@ export async function deleteAdminSubCategory(id: string) {
 
   if (error) throw error;
 }
+
+
+
+
+
+
+/* =========================
+   REORDERING
+========================= */
+
+export async function reorderAdminCategories(
+  ordered: { id: string; display_order: number }[]
+) {
+  for (const row of ordered) {
+    const { error } = await supabase
+      .from("admin_categories")
+      .update({ display_order: row.display_order })
+      .eq("id", row.id);
+
+    if (error) throw error;
+  }
+}
+
+export async function reorderAdminSubCategories(
+  ordered: { id: string; display_order: number }[]
+) {
+  for (const row of ordered) {
+    const { error } = await supabase
+      .from("admin_subcategories")
+      .update({ display_order: row.display_order })
+      .eq("id", row.id);
+
+    if (error) throw error;
+  }
+}
+
+/* =========================
+   BULK ACTIVE
+========================= */
+
+export async function bulkSetCategoriesActive(
+  ids: string[],
+  is_active: boolean
+) {
+  if (!ids.length) return;
+
+  const { error } = await supabase
+    .from("admin_categories")
+    .update({ is_active })
+    .in("id", ids);
+
+  if (error) throw error;
+}
+
+export async function bulkSetSubCategoriesActive(
+  ids: string[],
+  is_active: boolean
+) {
+  if (!ids.length) return;
+
+  const { error } = await supabase
+    .from("admin_subcategories")
+    .update({ is_active })
+    .in("id", ids);
+
+  if (error) throw error;
+}
+
+/* =========================
+   PRODUCT LIST FOR MODAL
+========================= */
+
+export type ProductLite = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  stock: number;
+  is_active: boolean;
+  main_category: string | null;
+  sub_category: string | null;
+  brand: string | null;
+};
+
+export async function listProductsByCategoryName(categoryName: string) {
+  const { data, error } = await supabase
+    .from("products")
+    .select(
+      "id,name,slug,price,stock,is_active,main_category,sub_category,brand"
+    )
+    .eq("main_category", categoryName)
+    .order("name", { ascending: true });
+
+  if (error) throw error;
+  return (data ?? []) as ProductLite[];
+}
+
+export async function listProductsBySubCategoryName(subCategoryName: string) {
+  const { data, error } = await supabase
+    .from("products")
+    .select(
+      "id,name,slug,price,stock,is_active,main_category,sub_category,brand"
+    )
+    .eq("sub_category", subCategoryName)
+    .order("name", { ascending: true });
+
+  if (error) throw error;
+  return (data ?? []) as ProductLite[];
+}

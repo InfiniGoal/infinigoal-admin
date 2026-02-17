@@ -982,6 +982,285 @@
 ////////// ********* above code worked before the sku code
 
 
+// import { useForm, Controller, type SubmitHandler } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+
+// import { variantSchema } from "../schema";
+// import type { VariantFormValues, VariantUI } from "../schema";
+
+// import AttributesEditor from "./AttributesEditor";
+
+// type Props = {
+//   onSave: (variant: VariantUI) => void;
+//   onCancel: () => void;
+// };
+
+// export default function VariantForm({ onSave, onCancel }: Props) {
+//   const {
+//     register,
+//     handleSubmit,
+//     control,
+//     formState: { errors },
+//   } = useForm<VariantFormValues>({
+//     resolver: zodResolver(variantSchema),
+//     defaultValues: {
+//       variant_name: "",
+//       short_label: "",
+//       sku: "", // 🆕
+//       price: 1,
+//       mrp: undefined,
+//       stock: 0,
+//       attributes: undefined,
+//       is_default: false,
+//     },
+//     mode: "onSubmit",
+//   });
+
+//   const submit: SubmitHandler<VariantFormValues> = (values) => {
+//     const uiVariant: VariantUI = {
+//       id: crypto.randomUUID(),
+//       images: [],
+//       ...values,
+//     };
+
+//     console.log("✅ VARIANT UI:", uiVariant);
+//     onSave(uiVariant);
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit(submit)} style={card}>
+//       <h3 style={title}>Add Variant</h3>
+
+//       {/* ================= BASIC INFO ================= */}
+//       <Section title="Variant Information">
+//         <FloatingInput
+//           label="Variant Name"
+//           error={errors.variant_name?.message}
+//         >
+//           <input {...register("variant_name")} style={inputBase} />
+//         </FloatingInput>
+
+//         <FloatingInput
+//           label="Short Label"
+//           error={errors.short_label?.message}
+//         >
+//           <input {...register("short_label")} style={inputBase} />
+//         </FloatingInput>
+
+//         {/* 🆕 SKU FIELD */}
+//         <FloatingInput
+//           label="SKU (optional)"
+//           error={errors.sku?.message}
+//         >
+//           <input {...register("sku")} style={inputBase} />
+//         </FloatingInput>
+//       </Section>
+
+//       {/* ================= PRICING ================= */}
+//       <Section title="Pricing & Inventory">
+//         <Row>
+//           <FloatingInput label="Selling Price" error={errors.price?.message}>
+//             <input
+//               type="number"
+//               {...register("price", { valueAsNumber: true })}
+//               style={inputBase}
+//             />
+//           </FloatingInput>
+
+//           <FloatingInput label="MRP" error={errors.mrp?.message}>
+//             <input
+//               type="number"
+//               {...register("mrp", { valueAsNumber: true })}
+//               style={inputBase}
+//             />
+//           </FloatingInput>
+//         </Row>
+
+//         <FloatingInput label="Stock" error={errors.stock?.message}>
+//           <input
+//             type="number"
+//             {...register("stock", { valueAsNumber: true })}
+//             style={inputBase}
+//           />
+//         </FloatingInput>
+//       </Section>
+
+//       {/* ================= ATTRIBUTES ================= */}
+//       <Section title="Variant Attributes">
+//         <Controller
+//           name="attributes"
+//           control={control}
+//           render={({ field }) => (
+//             <AttributesEditor value={field.value} onChange={field.onChange} />
+//           )}
+//         />
+//         {errors.attributes && (
+//           <div style={errorText}>
+//             {errors.attributes.message as string}
+//           </div>
+//         )}
+//       </Section>
+
+//       {/* ================= DEFAULT ================= */}
+//       <div style={defaultRow}>
+//         <input type="checkbox" {...register("is_default")} />
+//         <span>Make this the default variant</span>
+//       </div>
+
+//       {/* ================= ACTIONS ================= */}
+//       <div style={actions}>
+//         <button type="submit" style={btnPrimary}>
+//           Save Variant
+//         </button>
+//         <button type="button" onClick={onCancel} style={btnSecondary}>
+//           Cancel
+//         </button>
+//       </div>
+//     </form>
+//   );
+// }
+
+// /* ================= UI HELPERS ================= */
+
+// function Section({
+//   title,
+//   children,
+// }: {
+//   title: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div style={section}>
+//       <h4 style={sectionTitle}>{title}</h4>
+//       {children}
+//     </div>
+//   );
+// }
+
+// function Row({ children }: { children: React.ReactNode }) {
+//   return <div style={row}>{children}</div>;
+// }
+
+// function FloatingInput({
+//   label,
+//   error,
+//   children,
+// }: {
+//   label: string;
+//   error?: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <div style={inputWrapper}>
+//       <label style={floatingLabel}>{label}</label>
+//       {children}
+//       {error && <div style={errorText}>{error}</div>}
+//     </div>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const card: React.CSSProperties = {
+//   marginTop: 16,
+//   padding: 20,
+//   borderRadius: 18,
+//   background: "#ffffff",
+//   boxShadow: "0 8px 26px rgba(0,0,0,0.09)",
+// };
+
+// const title: React.CSSProperties = {
+//   fontSize: 16,
+//   fontWeight: 800,
+//   marginBottom: 18,
+// };
+
+// const section: React.CSSProperties = {
+//   marginBottom: 22,
+// };
+
+// const sectionTitle: React.CSSProperties = {
+//   fontSize: 14,
+//   fontWeight: 700,
+//   marginBottom: 12,
+// };
+
+// const row: React.CSSProperties = {
+//   display: "grid",
+//   gridTemplateColumns: "1fr 1fr",
+//   gap: 14,
+// };
+
+// const inputWrapper: React.CSSProperties = {
+//   position: "relative",
+//   marginBottom: 16,
+//   marginRight: 25,
+// };
+
+// const floatingLabel: React.CSSProperties = {
+//   position: "absolute",
+//   top: -8,
+//   left: 12,
+//   background: "#ffffff",
+//   padding: "0 6px",
+//   fontSize: 12,
+//   fontWeight: 600,
+//   color: "#6C7A89",
+// };
+
+// const inputBase: React.CSSProperties = {
+//   width: "100%",
+//   padding: "14px 12px",
+//   borderRadius: 14,
+//   border: "1px solid #E3E3E3",
+//   background: "#FAFAFA",
+//   fontSize: 14,
+// };
+
+// const errorText: React.CSSProperties = {
+//   marginTop: 6,
+//   fontSize: 12,
+//   color: "#b91c1c",
+// };
+
+// const defaultRow: React.CSSProperties = {
+//   display: "flex",
+//   alignItems: "center",
+//   gap: 10,
+//   paddingTop: 12,
+//   marginBottom: 18,
+//   borderTop: "1px solid #eee",
+// };
+
+// const actions: React.CSSProperties = {
+//   display: "flex",
+//   gap: 12,
+// };
+
+// const btnPrimary: React.CSSProperties = {
+//   padding: "12px 16px",
+//   borderRadius: 14,
+//   background: "#111827",
+//   color: "#fff",
+//   border: "none",
+//   fontWeight: 800,
+//   cursor: "pointer",
+// };
+
+// const btnSecondary: React.CSSProperties = {
+//   padding: "12px 16px",
+//   borderRadius: 14,
+//   border: "1px solid #e5e7eb",
+//   background: "#ffffff",
+//   cursor: "pointer",
+// };
+
+
+
+
+///////// ****** after update motherboard v1 upgrade
+
+
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -1000,13 +1279,14 @@ export default function VariantForm({ onSave, onCancel }: Props) {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    watch,
   } = useForm<VariantFormValues>({
     resolver: zodResolver(variantSchema),
     defaultValues: {
       variant_name: "",
       short_label: "",
-      sku: "", // 🆕
+      sku: "",
       price: 1,
       mrp: undefined,
       stock: 0,
@@ -1023,18 +1303,25 @@ export default function VariantForm({ onSave, onCancel }: Props) {
       ...values,
     };
 
-    console.log("✅ VARIANT UI:", uiVariant);
     onSave(uiVariant);
   };
 
+  const isDefault = watch("is_default");
+
   return (
     <form onSubmit={handleSubmit(submit)} style={card}>
-      <h3 style={title}>Add Variant</h3>
+      <div style={header}>
+        <h3 style={title}>Add Variant</h3>
+        <p style={subtitle}>
+          Create a product variation with unique price, stock and attributes.
+        </p>
+      </div>
 
       {/* ================= BASIC INFO ================= */}
       <Section title="Variant Information">
         <FloatingInput
           label="Variant Name"
+          required
           error={errors.variant_name?.message}
         >
           <input {...register("variant_name")} style={inputBase} />
@@ -1047,9 +1334,9 @@ export default function VariantForm({ onSave, onCancel }: Props) {
           <input {...register("short_label")} style={inputBase} />
         </FloatingInput>
 
-        {/* 🆕 SKU FIELD */}
         <FloatingInput
-          label="SKU (optional)"
+          label="SKU"
+          hint="Optional unique stock identifier"
           error={errors.sku?.message}
         >
           <input {...register("sku")} style={inputBase} />
@@ -1059,7 +1346,11 @@ export default function VariantForm({ onSave, onCancel }: Props) {
       {/* ================= PRICING ================= */}
       <Section title="Pricing & Inventory">
         <Row>
-          <FloatingInput label="Selling Price" error={errors.price?.message}>
+          <FloatingInput
+            label="Selling Price"
+            required
+            error={errors.price?.message}
+          >
             <input
               type="number"
               {...register("price", { valueAsNumber: true })}
@@ -1076,7 +1367,12 @@ export default function VariantForm({ onSave, onCancel }: Props) {
           </FloatingInput>
         </Row>
 
-        <FloatingInput label="Stock" error={errors.stock?.message}>
+        <FloatingInput
+          label="Stock"
+          required
+          hint="0 means out of stock"
+          error={errors.stock?.message}
+        >
           <input
             type="number"
             {...register("stock", { valueAsNumber: true })}
@@ -1091,7 +1387,12 @@ export default function VariantForm({ onSave, onCancel }: Props) {
           name="attributes"
           control={control}
           render={({ field }) => (
-            <AttributesEditor value={field.value} onChange={field.onChange} />
+            <div style={{ width: "100%" }}>
+              <AttributesEditor
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </div>
           )}
         />
         {errors.attributes && (
@@ -1102,16 +1403,33 @@ export default function VariantForm({ onSave, onCancel }: Props) {
       </Section>
 
       {/* ================= DEFAULT ================= */}
-      <div style={defaultRow}>
-        <input type="checkbox" {...register("is_default")} />
-        <span>Make this the default variant</span>
+      <div style={switchRow}>
+        <div>
+          <div style={switchTitle}>Default Variant</div>
+          <div style={switchHint}>
+            This variant will be pre-selected for customers
+          </div>
+        </div>
+        <Switch
+          {...register("is_default")}
+          checked={isDefault}
+        />
       </div>
 
       {/* ================= ACTIONS ================= */}
       <div style={actions}>
-        <button type="submit" style={btnPrimary}>
-          Save Variant
+        <button
+          type="submit"
+          style={{
+            ...btnPrimary,
+            opacity: isSubmitting ? 0.7 : 1,
+            cursor: isSubmitting ? "not-allowed" : "pointer",
+          }}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Save Variant"}
         </button>
+
         <button type="button" onClick={onCancel} style={btnSecondary}>
           Cancel
         </button>
@@ -1143,114 +1461,219 @@ function Row({ children }: { children: React.ReactNode }) {
 
 function FloatingInput({
   label,
+  required,
+  hint,
   error,
   children,
 }: {
   label: string;
+  required?: boolean;
+  hint?: string;
   error?: string;
   children: React.ReactNode;
 }) {
   return (
     <div style={inputWrapper}>
-      <label style={floatingLabel}>{label}</label>
+      <div style={labelRow}>
+        <label style={floatingLabel}>
+          {label} {required && <span style={req}>*</span>}
+        </label>
+        {hint && <span style={miniHint}>{hint}</span>}
+      </div>
       {children}
       {error && <div style={errorText}>{error}</div>}
     </div>
   );
 }
 
+function Switch({ checked, ...props }: any) {
+  return (
+    <label style={switchWrap}>
+      <input
+        type="checkbox"
+        checked={checked}
+        {...props}
+        style={switchInput}
+      />
+      <span
+        style={{
+          ...switchTrack,
+          background: checked ? "#bf9602" : "#E5E7EB",
+        }}
+      />
+      <span
+        style={{
+          ...switchThumb,
+          transform: checked
+            ? "translateX(20px)"
+            : "translateX(0px)",
+        }}
+      />
+    </label>
+  );
+}
+
 /* ================= STYLES ================= */
 
 const card: React.CSSProperties = {
-  marginTop: 16,
-  padding: 20,
-  borderRadius: 18,
+  marginTop: 20,
+  padding: 24,
+  borderRadius: 20,
   background: "#ffffff",
-  boxShadow: "0 8px 26px rgba(0,0,0,0.09)",
+  boxShadow: "0 12px 30px rgba(0,0,0,0.08)",
+  width: "100%",
+  boxSizing: "border-box",
+};
+
+const header: React.CSSProperties = {
+  marginBottom: 20,
 };
 
 const title: React.CSSProperties = {
-  fontSize: 16,
-  fontWeight: 800,
-  marginBottom: 18,
+  fontSize: 18,
+  fontWeight: 900,
+  margin: 0,
+};
+
+const subtitle: React.CSSProperties = {
+  fontSize: 13,
+  color: "#6b7280",
+  marginTop: 6,
 };
 
 const section: React.CSSProperties = {
-  marginBottom: 22,
+  marginBottom: 26,
 };
 
 const sectionTitle: React.CSSProperties = {
   fontSize: 14,
-  fontWeight: 700,
-  marginBottom: 12,
+  fontWeight: 800,
+  marginBottom: 14,
 };
 
 const row: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: 14,
+  gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+  gap: 16,
 };
 
 const inputWrapper: React.CSSProperties = {
-  position: "relative",
   marginBottom: 16,
-  marginRight: 25,
+  width: "100%",
+};
+
+const labelRow: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 6,
 };
 
 const floatingLabel: React.CSSProperties = {
-  position: "absolute",
-  top: -8,
-  left: 12,
-  background: "#ffffff",
-  padding: "0 6px",
   fontSize: 12,
-  fontWeight: 600,
-  color: "#6C7A89",
+  fontWeight: 800,
+  color: "#374151",
+};
+
+const req: React.CSSProperties = {
+  color: "#b42318",
+};
+
+const miniHint: React.CSSProperties = {
+  fontSize: 11,
+  color: "#9CA3AF",
 };
 
 const inputBase: React.CSSProperties = {
   width: "100%",
-  padding: "14px 12px",
+  padding: "13px 14px",
   borderRadius: 14,
-  border: "1px solid #E3E3E3",
+  border: "1px solid #E5E7EB",
   background: "#FAFAFA",
   fontSize: 14,
+  outline: "none",
+  boxSizing: "border-box",
 };
 
 const errorText: React.CSSProperties = {
   marginTop: 6,
   fontSize: 12,
   color: "#b91c1c",
+  fontWeight: 600,
 };
 
-const defaultRow: React.CSSProperties = {
+const switchRow: React.CSSProperties = {
   display: "flex",
+  justifyContent: "space-between",
   alignItems: "center",
-  gap: 10,
-  paddingTop: 12,
-  marginBottom: 18,
-  borderTop: "1px solid #eee",
+  paddingTop: 16,
+  marginBottom: 24,
+  borderTop: "1px solid #f1f1f1",
+};
+
+const switchTitle: React.CSSProperties = {
+  fontWeight: 800,
+  fontSize: 13,
+};
+
+const switchHint: React.CSSProperties = {
+  fontSize: 12,
+  color: "#6b7280",
+};
+
+const switchWrap: React.CSSProperties = {
+  position: "relative",
+  width: 46,
+  height: 26,
+};
+
+const switchInput: React.CSSProperties = {
+  opacity: 0,
+  width: 46,
+  height: 26,
+  position: "absolute",
+  zIndex: 2,
+  cursor: "pointer",
+};
+
+const switchTrack: React.CSSProperties = {
+  position: "absolute",
+  inset: 0,
+  borderRadius: 999,
+  background: "#E5E7EB",
+  transition: "background 0.2s ease",
+};
+
+const switchThumb: React.CSSProperties = {
+  position: "absolute",
+  width: 20,
+  height: 20,
+  borderRadius: 999,
+  background: "#ffffff",
+  top: 3,
+  left: 3,
+  transition: "transform 0.18s ease",
+  boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
 };
 
 const actions: React.CSSProperties = {
   display: "flex",
-  gap: 12,
+  gap: 14,
 };
 
 const btnPrimary: React.CSSProperties = {
-  padding: "12px 16px",
+  padding: "12px 18px",
   borderRadius: 14,
   background: "#111827",
   color: "#fff",
   border: "none",
   fontWeight: 800,
-  cursor: "pointer",
 };
 
 const btnSecondary: React.CSSProperties = {
-  padding: "12px 16px",
+  padding: "12px 18px",
   borderRadius: 14,
-  border: "1px solid #e5e7eb",
+  border: "1px solid #E5E7EB",
   background: "#ffffff",
-  cursor: "pointer",
+  fontWeight: 700,
 };
